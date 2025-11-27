@@ -49,7 +49,7 @@ public class UserService
     {
         using var reader = new StreamReader(_userFile);
         using var csv = new CsvReader(reader, _cfg);
-        csv.Context.RegisterClassMap<UserMap>();
+        csv.Context.RegisterClassMap<CsvMappings>();
         _users = csv.GetRecords<User>().ToList();
     }
 
@@ -57,20 +57,20 @@ public class UserService
     {
         using var writer = new StreamWriter(_userFile, false);
         using var csv = new CsvWriter(writer, _cfg);
-        csv.Context.RegisterClassMap<UserMap>();
+        csv.Context.RegisterClassMap<CsvMappings>();
         csv.WriteRecords(_users);
     }
 
     public bool Exists(string username) => _users.Any(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
 
     public bool IsActive(string username) =>
-        _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase))?.IsActive ?? false;
+        _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase))?.Active ?? false;
 
     public bool Authenticate(string username, string password)
     {
         var user = _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         if (user is null) return false;
-        if (!user.IsActive) return false;
+        if (!user.Active) return false;
         return user.Password == password;
     }
 
@@ -78,8 +78,8 @@ public class UserService
     {
         var user = _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
         if (user is null) return;
-        if (!user.IsActive) return;
-        user.IsActive = false;
+        if (!user.Active) return;
+        user.Active = false;
         SaveUsers();
     }
 
