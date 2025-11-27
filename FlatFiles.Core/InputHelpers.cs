@@ -17,7 +17,7 @@ public class InputHelpers
             var input = Console.ReadLine()?.Trim() ?? "";
             if (!string.IsNullOrWhiteSpace(input))
                 return input;
-            Console.WriteLine("⚠️ Este campo es obligatorio. Intenta de nuevo.");
+            Console.WriteLine("Este campo es obligatorio. Intenta de nuevo.");
         }
     }
 
@@ -39,11 +39,11 @@ public class InputHelpers
             if (int.TryParse(input, out var id))
             {
                 if (isUnique(id)) return id;
-                Console.WriteLine("⚠️ El ID ya existe. Debe ser único.");
+                Console.WriteLine("El ID ya existe. Debe ser único.");
             }
             else
             {
-                Console.WriteLine("⚠️ El ID debe ser un número entero.");
+                Console.WriteLine("El ID debe ser un número entero.");
             }
         }
     }
@@ -57,11 +57,11 @@ public class InputHelpers
             if (int.TryParse(input, out var id))
             {
                 if (exists(id)) return id;
-                Console.WriteLine("⚠️ El ID no existe.");
+                Console.WriteLine("El ID no existe.");
             }
             else
             {
-                Console.WriteLine("⚠️ El ID debe ser un número entero.");
+                Console.WriteLine("El ID debe ser un número entero.");
             }
         }
     }
@@ -75,7 +75,7 @@ public class InputHelpers
             if (t.All(char.IsDigit) && t.Length >= 7 && t.Length <= 15)
                 return t;
 
-            Console.WriteLine("⚠️ Teléfono inválido.");
+            Console.WriteLine("Teléfono inválido.");
         }
     }
 
@@ -88,7 +88,7 @@ public class InputHelpers
         if (t.All(char.IsDigit) && t.Length >= 7 && t.Length <= 15)
             return t;
 
-        Console.WriteLine("⚠️ Teléfono inválido. Se mantiene el valor previo.");
+        Console.WriteLine("Teléfono inválido. Se mantiene el valor previo.");
         return null;
     }
 
@@ -101,7 +101,7 @@ public class InputHelpers
             if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var saldo) && saldo > 0)
                 return saldo;
 
-            Console.WriteLine("⚠️ Saldo inválido. Debe ser un número positivo (ej: 5000.00).");
+            Console.WriteLine("Saldo inválido. Debe ser un número positivo (ej: 5000.00).");
         }
     }
 
@@ -113,7 +113,7 @@ public class InputHelpers
         if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var saldo) && saldo > 0)
             return saldo;
 
-        Console.WriteLine("⚠️ Saldo inválido. Se mantiene el valor previo.");
+        Console.WriteLine("Saldo inválido. Se mantiene el valor previo.");
         return null;
     }
 

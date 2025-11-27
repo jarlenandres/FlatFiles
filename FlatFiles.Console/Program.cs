@@ -20,7 +20,7 @@ for (int attemptsLeft = 3; attemptsLeft > 0; attemptsLeft--)
     if (!userService.Exists(username))
     {
         LogWriter.Log(username, "Intento de login: usuario no existe.");
-        Console.WriteLine("⚠️ Usuario no registrado.");
+        Console.WriteLine("Usuario no registrado.");
         Pause();
         continue;
     }
@@ -28,7 +28,7 @@ for (int attemptsLeft = 3; attemptsLeft > 0; attemptsLeft--)
     if (!userService.IsActive(username))
     {
         LogWriter.Log(username, "Intento de login: usuario bloqueado.");
-        Console.WriteLine("⚠️ Usuario bloqueado. Solicite desbloqueo al administrador.");
+        Console.WriteLine("Usuario bloqueado. Solicite desbloqueo al administrador.");
         Pause();
         continue;
     }
@@ -42,14 +42,14 @@ for (int attemptsLeft = 3; attemptsLeft > 0; attemptsLeft--)
     }
     else
     {
-        LogWriter.Log(username, $"Login fallido. Intentos restantes: {attemptsLeft - 1}");
-        Console.WriteLine($" Usuario/contraseña incorrectos. Intentos restantes: {attemptsLeft - 1}");
-        if (attemptsLeft - 1 == 0)
+        LogWriter.Log(username, $"Login fallido. Intentos restantes: {attemptsLeft - 2}");
+        Console.WriteLine($" Usuario/contraseña incorrectos. Intentos restantes: {attemptsLeft - 2}");
+        if (attemptsLeft - 2 == 0)
         {
             // bloquea al usuario que intentó
             userService.BlockUser(username);
             LogWriter.Log(username, "Usuario bloqueado por exceder intentos fallidos.");
-            Console.WriteLine("🔒 Usuario bloqueado por exceder intentos fallidos.");
+            Console.WriteLine("Usuario bloqueado por exceder intentos fallidos.");
         }
         Pause();
     }
@@ -98,7 +98,7 @@ while (true)
                 LogWriter.Log(loggedUser, "Salida de la aplicación.");
                 return;
             default:
-                Console.WriteLine("⚠️ Opción inválida.");
+                Console.WriteLine("Opción inválida.");
                 Pause();
                 break;
         }
@@ -118,7 +118,7 @@ static void CrearPersona(PersonService personService, string user)
     Console.Clear();
     Console.WriteLine("=== Crear Persona ===");
 
-    int id = InputHelpers.PromptIntUnique("ID (único, numérico)", id => !personService.ExistsId(id));
+    int _id = InputHelpers.PromptIntUnique("ID (único, numérico)", _id => !personService.ExistsId(_id));
 
     string _name = InputHelpers.PromptRequired("Nombres");
     string _firsname = InputHelpers.PromptRequired("Apellidos");
@@ -127,14 +127,14 @@ static void CrearPersona(PersonService personService, string user)
     string _city = Console.ReadLine()?.Trim() ?? "";
     if (string.IsNullOrWhiteSpace(_city))
     {
-        Console.WriteLine("⚠️ La ciudad es obligatoria.");
+        Console.WriteLine("La ciudad es obligatoria.");
         _city = InputHelpers.PromptRequired("Ciudad");
     }
     decimal _balance = InputHelpers.PromptSaldoPositivo();
 
     var p = new Person
     {
-        Id = id,
+        Id = _id,
         Name = _name,
         FirstName = _firsname,
         Phone = _phone,
@@ -200,7 +200,7 @@ static void BorrarPersona(PersonService personService, string user)
         if (personService.Delete(id))
         {
             LogWriter.Log(user, $"Borró persona ID={id}");
-            Console.WriteLine("🗑️ Persona borrada.");
+            Console.WriteLine("Persona borrada.");
         }
         else
         {
