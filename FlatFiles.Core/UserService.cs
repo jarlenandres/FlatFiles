@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,47 +9,78 @@ using System.Threading.Tasks;
 
 namespace FlatFiles.Core;
 
-internal class UserService
+public class UserService
 {
-    private readonly string userFile = "User.txt";
-    private List<User> _users;
 
-    public UserService()
+    private readonly string _userFile;
+    private readonly CsvConfiguration _cfg;
+    private List<User> _users = new();
+
+    public UserService(string userFile = "Users.txt")
     {
+        _userFile = userFile;
+        _cfg = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = false,
+            Delimiter = ",",
+            TrimOptions = TrimOptions.Trim,
+            ShouldQuote = args => true
+        };
+        EnsureUsersFileExists();
         LoadUsers();
+    }
+
+    private void EnsureUsersFileExists()
+    {
+        if (!File.Exists(_userFile))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_userFile)) ?? ".");
+            // Crea con datos de ejemplo
+            var sample = new[]
+            {
+                "jzuluaga,P@ssw0rd123!,true",
+                "mbedoya,S0yS3gur02025*,false"
+            };
+            File.WriteAllLines(_userFile, sample);
+        }
     }
 
     private void LoadUsers()
     {
-        using var sr = new StreamReader(userFile);
-        using var cr = new CsvReader(sr, CultureInfo.InvariantCulture);
-        _users = cr.GetRecords<User>().ToList();
+        using var reader = new StreamReader(_userFile);
+        using var csv = new CsvReader(reader, _cfg);
+        csv.Context.RegisterClassMap<UserMap>();
+        _users = csv.GetRecords<User>().ToList();
     }
+
+    private void SaveUsers()
+    {
+        using var writer = new StreamWriter(_userFile, false);
+        using var csv = new CsvWriter(writer, _cfg);
+        csv.Context.RegisterClassMap<UserMap>();
+        csv.WriteRecords(_users);
+    }
+
+    public bool Exists(string username) => _users.Any(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+
+    public bool IsActive(string username) =>
+        _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase))?.IsActive ?? false;
 
     public bool Authenticate(string username, string password)
     {
-        var user = _users.FirstOrDefault(u => u.Username == username);
-        if (user is null || !user.Active)
-        {
-            return false;
-        }
+        var user = _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+        if (user is null) return false;
+        if (!user.IsActive) return false;
         return user.Password == password;
     }
 
     public void BlockUser(string username)
     {
-        var user = _users.FirstOrDefault(u => u.Username == username);
-        if (user != null)
-        {
-            user.Active = false;
-            SaveUsers();
-        }
+        var user = _users.FirstOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+        if (user is null) return;
+        if (!user.IsActive) return;
+        user.IsActive = false;
+        SaveUsers();
     }
 
-    private void SaveUsers()
-    {
-        using var sw = new StreamWriter(userFile);
-        using var cw = new CsvWriter(sw, CultureInfo.InvariantCulture);
-        cw.WriteRecords(_users);
-    }
 }
