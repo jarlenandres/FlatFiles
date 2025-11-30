@@ -11,12 +11,11 @@ namespace FlatFiles.Core;
 
 public class PersonService
 {
-
     private readonly string _personFile;
     private readonly CsvConfiguration _cfg;
     private List<Person> _persons = new();
 
-    public PersonService(string personFile = "Persons.txt")
+    public PersonService(string personFile = "Persons.csv")
     {
         _personFile = personFile;
         _cfg = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -35,7 +34,7 @@ public class PersonService
         if (!File.Exists(_personFile))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_personFile)) ?? ".");
-            File.WriteAllText(_personFile, ""); // archivo vacío inicial
+            File.WriteAllText(_personFile, "");
         }
     }
 
@@ -88,7 +87,7 @@ public class PersonService
 
     public void Report()
     {
-        var culture = CultureInfo.InvariantCulture; // para formato 5,000.00 como en el ejemplo
+        var culture = CultureInfo.InvariantCulture;
         var groups = _persons
             .OrderBy(p => p.City)
             .ThenBy(p => p.Id)
@@ -118,5 +117,4 @@ public class PersonService
         Console.WriteLine($"{new string(' ', 34)}{"=======",12}");
         Console.WriteLine($"Total General:{new string(' ', 17)}{grandTotal.ToString("N2", culture),12}");
     }
-
 }

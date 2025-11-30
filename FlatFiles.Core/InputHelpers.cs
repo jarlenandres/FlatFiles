@@ -25,7 +25,7 @@ public class InputHelpers
     {
         Console.Write($"{label} ({currentValue}) [ENTER para mantener]: ");
         var input = Console.ReadLine();
-        if (string.IsNullOrEmpty(input)) return null; // mantener
+        if (string.IsNullOrEmpty(input)) return null;
         input = input.Trim();
         return input.Length == 0 ? null : input;
     }
@@ -70,9 +70,9 @@ public class InputHelpers
     {
         while (true)
         {
-            Console.Write("Teléfono (solo dígitos, mínimo 7): ");
+            Console.Write("Teléfono (solo dígitos, mínimo 10): ");
             var t = Console.ReadLine()?.Trim() ?? "";
-            if (t.All(char.IsDigit) && t.Length >= 7 && t.Length <= 15)
+            if (t.All(char.IsDigit) && t.Length >= 10 && t.Length <= 15)
                 return t;
 
             Console.WriteLine("Teléfono inválido.");
@@ -85,7 +85,7 @@ public class InputHelpers
         var t = Console.ReadLine();
         if (string.IsNullOrEmpty(t)) return null;
         t = t.Trim();
-        if (t.All(char.IsDigit) && t.Length >= 7 && t.Length <= 15)
+        if (t.All(char.IsDigit) && t.Length >= 10 && t.Length <= 15)
             return t;
 
         Console.WriteLine("Teléfono inválido. Se mantiene el valor previo.");

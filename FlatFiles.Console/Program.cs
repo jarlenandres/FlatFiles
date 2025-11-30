@@ -1,14 +1,12 @@
 ﻿using FlatFiles.Core;
 
 var userService = new UserService("Users.txt");
-var personService = new PersonService("Persons.txt");
+var personService = new PersonService("Persons.csv");
 
-// LOG de arranque
 LogWriter.LogSystem("Aplicación iniciada.");
 
 string? loggedUser = null;
 
-// ======= LOGIN =======
 for (int attemptsLeft = 3; attemptsLeft > 0; attemptsLeft--)
 {
     Console.Clear();
@@ -46,7 +44,6 @@ for (int attemptsLeft = 3; attemptsLeft > 0; attemptsLeft--)
         Console.WriteLine($" Usuario/contraseña incorrectos. Intentos restantes: {attemptsLeft - 2}");
         if (attemptsLeft - 2 == 0)
         {
-            // bloquea al usuario que intentó
             userService.BlockUser(username);
             LogWriter.Log(username, "Usuario bloqueado por exceder intentos fallidos.");
             Console.WriteLine("Usuario bloqueado por exceder intentos fallidos.");
@@ -61,7 +58,6 @@ if (loggedUser is null)
     return;
 }
 
-// ======= MENÚ PRINCIPAL =======
 while (true)
 {
     Console.Clear();
@@ -80,23 +76,29 @@ while (true)
         switch (opt)
         {
             case "1":
-                CrearPersona(personService, loggedUser);
+                CreatePerson(personService, loggedUser);
                 break;
+
             case "2":
-                EditarPersona(personService, loggedUser);
+                EditPerson(personService, loggedUser);
                 break;
+
             case "3":
-                BorrarPersona(personService, loggedUser);
+                DeletePerson(personService, loggedUser);
                 break;
+
             case "4":
-                ListarPersonas(personService, loggedUser);
+                ListPeople(personService, loggedUser);
                 break;
+
             case "5":
-                Informe(personService, loggedUser);
+                Report(personService, loggedUser);
                 break;
+
             case "0":
                 LogWriter.Log(loggedUser, "Salida de la aplicación.");
                 return;
+
             default:
                 Console.WriteLine("Opción inválida.");
                 Pause();
@@ -111,9 +113,7 @@ while (true)
     }
 }
 
-// ======= FUNCIONES =======
-
-static void CrearPersona(PersonService personService, string user)
+static void CreatePerson(PersonService personService, string user)
 {
     Console.Clear();
     Console.WriteLine("=== Crear Persona ===");
@@ -148,7 +148,7 @@ static void CrearPersona(PersonService personService, string user)
     Pause();
 }
 
-static void EditarPersona(PersonService personService, string user)
+static void EditPerson(PersonService personService, string user)
 {
     Console.Clear();
     Console.WriteLine("=== Editar Persona ===");
@@ -176,7 +176,7 @@ static void EditarPersona(PersonService personService, string user)
     Pause();
 }
 
-static void BorrarPersona(PersonService personService, string user)
+static void DeletePerson(PersonService personService, string user)
 {
     Console.Clear();
     Console.WriteLine("=== Borrar Persona ===");
@@ -214,7 +214,7 @@ static void BorrarPersona(PersonService personService, string user)
     Pause();
 }
 
-static void ListarPersonas(PersonService personService, string user)
+static void ListPeople(PersonService personService, string user)
 {
     Console.Clear();
     Console.WriteLine("=== Listado de Personas ===");
@@ -228,7 +228,7 @@ static void ListarPersonas(PersonService personService, string user)
     Pause();
 }
 
-static void Informe(PersonService personService, string user)
+static void Report(PersonService personService, string user)
 {
     Console.Clear();
     Console.WriteLine("=== Informe por Ciudad ===");
